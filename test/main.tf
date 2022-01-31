@@ -15,3 +15,7 @@ module "kubectl" {
 EOT
   ]
 }
+
+output "logs" {
+  value = module.kubectl.logfile-name
+}

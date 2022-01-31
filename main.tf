@@ -55,7 +55,3 @@ resource "null_resource" "kubectl" {
     }
   }
 }
-
-output "logfile-name" {
-  value = local.logfile-name
-}
