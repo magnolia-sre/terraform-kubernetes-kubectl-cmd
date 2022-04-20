@@ -1,6 +1,6 @@
 # kubectl-cmd
 
-Launch `kubectl` commands with same terraform credentials used externally to the module, see `/test/main.tf` and `test/provider.tf` for an AWS based example on how to configure.
+Use this module to launch `kubectl` commands from a shell using the very same terraform kubernetes provider credentials, see `/test/main.tf` and `test/provider.tf` for an AWS based example on how to configure.
 
 Basically requires these variables for setting up the kubernetes provider:
 
@@ -35,7 +35,7 @@ Multiline scripts (using heredoc format) are considered a single command. You ca
 ```terraform
 
 module "kubectl" {
-  source = "../"
+  source  = "agseijas/kubectl-cmd/kubernetes"
 
   app            = "myapp"
   cluster-name   = "mycluster"
