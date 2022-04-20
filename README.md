@@ -39,9 +39,9 @@ module "kubectl" {
 
   app            = "myapp"
   cluster-name   = "mycluster"
-  endpoint       = var.endpoint
-  token          = var.token
-  ca-certificate = var.ca-certificate
+  endpoint       = var.endpoint         # alternatively just directly from provider definition: data.aws_eks_cluster.cluster.endpoint 
+  token          = var.token            # likewise: data.aws_eks_cluster_auth.cluster.token
+  ca-certificate = var.ca-certificate   # likewise: data.aws_eks_cluster.cluster.certificate_authority.0.data
   cmds           = [ <<-EOT
     kubectl get pods -all-namespaces
     kubectl logs -n myapp thispod 
