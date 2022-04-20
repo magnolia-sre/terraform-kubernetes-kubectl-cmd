@@ -1,9 +1,3 @@
-provider "kubernetes" {
-  host                   = local.endpoint
-  token                  = local.token
-  cluster_ca_certificate = base64decode(local.ca-certificate)
-}
-
 locals {
   endpoint       = var.endpoint
   token          = var.token
