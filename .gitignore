@@ -1,5 +1,5 @@
 # Local .terraform directories
-**/.terraform/*
+test/eks-token-old-credentials/.terraform/*
 
 # .tfstate files
 *.tfstate

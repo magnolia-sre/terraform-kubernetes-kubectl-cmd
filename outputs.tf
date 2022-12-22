@@ -3,3 +3,7 @@ output "logfile-name" {
           format("%s-%s", local.logfile-name, i)
   ]
 }
+
+output "deprecation_warning" {
+  value = var.endpoint != null ? "Noticed the usage of var.endpoint, please migrate to var.credentials.* instead" : "All good."
+}

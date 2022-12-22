@@ -12,8 +12,32 @@ variable "cmds" {
   description = "Command to execute kubectl with"
 }
 
-variable "endpoint" {}
+variable "endpoint" {
+  default = null
+  description = "Deprecated, please use the equivalent credentials.token.* var. This will be removed soon!"
+}
 
-variable "token" {}
+variable "token" {
+  default = null
+  description = "Deprecated, please use the equivalent credentials.token.* var. This will be removed soon!"
+}
 
-variable "ca-certificate" {}
+variable "ca-certificate" {
+  default = null
+  description = "Deprecated, please use the equivalent credentials.ca-certificate var. This will be removed soon!"
+}
+
+variable "credentials" {
+  default = {}
+  description = "Currently only supports token and kubeconfig-path"
+  type = object({
+    token: optional(object({
+      ca-certificate: optional(string) #TODO: determine if it belongs here or directly under its parent.
+      endpoint: optional(string)
+      token: optional(string)
+    }))
+    client-certificate: optional(string)
+    client-key: optional(string)
+    kubeconfig-path: optional(string)
+  })
+}

@@ -56,3 +56,14 @@ Will generate two log files with the output of the first and second command:
 
 `cmd-myapp.log-0` with the output of `kubectl logs -n myapp thispod`
 `cmd-myapp.log-1` with the output of `kubectl apply -f any.yaml`
+
+
+## Test
+
+If you're in AWS with EKS:
+
+```shell
+cd test/eks-token
+export TF_VAR_app="any namespace name to get pods from" && export TF_VAR_cluster-name="my-cluster-name" && export TF_VAR_role="arn:aws:iam::ACCOUNTID:role/my-role" && export TF_VAR_region="my-region"
+terraform apply
+```
