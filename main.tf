@@ -52,3 +52,21 @@ resource "null_resource" "kubectl" {
     }
   }
 }
+
+resource "null_resource" "kubectl-delete" {
+  count = length(var.destroy-cmds)
+
+  triggers = {
+    kubeconfig   = local.kubeconfig
+    logfile-name = local.logfile-name
+    destroy_cmd  = trim(replace(var.destroy-cmds[count.index], "kubectl", "kubectl ${local.kubectl_kubeconfig_param}"), "\n")
+  }
+  provisioner "local-exec" {
+    when        = destroy
+    command     = format("%s %s", self.triggers.destroy_cmd, ">> ${self.triggers.logfile-name}-${count.index}")
+    interpreter = ["/bin/bash", "-c"]
+    environment = {
+      KUBECONFIG = base64encode(self.triggers.kubeconfig)
+    }
+  }
+}

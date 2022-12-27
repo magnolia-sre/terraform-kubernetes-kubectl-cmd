@@ -12,6 +12,13 @@ variable "cmds" {
   description = "Command to execute kubectl with"
 }
 
+variable "destroy-cmds" {
+  type = list(string)
+  default = [""]
+  description = "Commands to execute during the destroy phase of the terraform module, using kubectl commands of course."
+}
+
+
 variable "endpoint" {
   default = null
   description = "Deprecated, please use the equivalent credentials.token.* var. This will be removed soon!"

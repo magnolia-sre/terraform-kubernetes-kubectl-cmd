@@ -30,7 +30,7 @@ Multiline scripts (using heredoc format) are considered a single command. You ca
 
 ### Example
 
-
+Example using token auth:
 
 ```terraform
 
@@ -56,11 +56,35 @@ EOT
 }
 ```
 
+There are other auth methods (see [variables.tf # credentials](variables.tf)) you can use; or even use a prebuilt kubeconfig file.
+
+```terraform
+module "kubectl" {
+  source  = "agseijas/kubectl-cmd/kubernetes"
+
+  app            = "myapp"
+  cluster-name   = "mycluster"
+  credentials    = {
+    kubeconfig-path: "./mykubeconfigfile"
+  }
+  cmds           = [ <<-EOT
+    kubectl get pods -all-namespaces
+    kubectl logs -n myapp thispod 
+EOT
+    ,
+    "kubectl apply -f any.yaml"
+  ]
+}
+```
+
 Will generate two log files with the output of the first and second command:
 
 `cmd-myapp.log-0` with the output of `kubectl logs -n myapp thispod`
 `cmd-myapp.log-1` with the output of `kubectl apply -f any.yaml`
 
+## Destroy phase
+
+You might define destroy phase commands too configuring it in the var `destroy-cmds`. Use this option carefully as destroy phase will rely on kube config that might have expired when the destroy is triggered.
 
 ## Test
 
