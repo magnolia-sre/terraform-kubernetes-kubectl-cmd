@@ -37,7 +37,7 @@ Example using token auth:
 ```terraform
 
 module "kubectl" {
-  source  = "agseijas/kubectl-cmd/kubernetes"
+  source  = "magnolia-sre/kubectl-cmd/kubernetes"
 
   app            = "myapp"
   cluster-name   = "mycluster"
@@ -68,7 +68,7 @@ There are other auth methods (see [variables.tf # credentials](variables.tf)) yo
 
 ```terraform
 module "kubectl" {
-  source  = "agseijas/kubectl-cmd/kubernetes"
+  source  = "magnolia-sre/kubectl-cmd/kubernetes"
 
   app            = "myapp"
   cluster-name   = "mycluster"
