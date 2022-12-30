@@ -1,6 +1,6 @@
 # kubectl-cmd
 
-Use this module to launch `kubectl` commands from a shell using the very same terraform kubernetes provider credentials, see `/test/*/main.tf` and `test/*/provider.tf` for some AWS with EKS based examples on how to configure.
+Terraform module which launches `kubectl` commands from a shell using terraform kubernetes provider credentials, see `/test/*/main.tf` and `test/*/provider.tf` for some AWS with EKS based examples on how to configure. Allows using manually forged custom kubeconfig files too.
 
 Basically requires these variables for setting up the kubernetes provider:
 
