@@ -1,15 +1,19 @@
-variable "cluster-name" {}
+variable "cluster-name" {
+  description = "Name of the k8s cluster to connect to. Ex. for a k8s cluster named `my-cluster-has-a-very-long-and-complex-name` use: `my-cluster-has-a-very-long-and-complex-name`"
+}
 
 variable "always-apply" {
   type = bool
   default = true
 }
 
-variable "app" {}
+variable "app" {
+  description = "The console-log output file names will use this app name variable. Ex. for `myapp`: cmd-myapp.log-0"
+}
 
 variable "cmds" {
   type = list(string)
-  description = "Command to execute kubectl with"
+  description = "Command(s) which will ultimately contain a `kubectl` command execution"
 }
 
 variable "destroy-cmds" {
@@ -47,4 +51,9 @@ variable "credentials" {
     client-key: optional(string)
     kubeconfig-path: optional(string)
   })
+}
+
+variable "interpreter" {
+  default = ["/bin/bash", "-c"]
+  description = "Provide a different than default ('/bin/bash') interpreter."
 }

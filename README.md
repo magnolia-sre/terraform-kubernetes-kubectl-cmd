@@ -1,6 +1,6 @@
 # kubectl-cmd
 
-Use this module to launch `kubectl` commands from a shell using the very same terraform kubernetes provider credentials, see `/test/main.tf` and `test/provider.tf` for an AWS based example on how to configure.
+Use this module to launch `kubectl` commands from a shell using the very same terraform kubernetes provider credentials, see `/test/*/main.tf` and `test/*/provider.tf` for some AWS with EKS based examples on how to configure.
 
 Basically requires these variables for setting up the kubernetes provider:
 
@@ -12,11 +12,11 @@ Since there are sensitive values, the output will be marked as sensitive and won
 
 ## Usage
 
-You might configure a list of scripts with kubectl commands to be launched locally using bash. Eg.:
+You might configure a list of (by default: bash-based) scripts with kubectl commands to be launched in the terraform running local machine. Eg.:
 
 - [`kubectl get pods -n one-namespace`, `kubectl get pods -n other-namespace`]
 
-The output of each command will be stored in indexed log files in the form of `cmd-<app>.log-<index>` in respective order of the commands.
+The output of each command will be stored in indexed log files in the form of `cmd-<app>.log-<index of the command>` in respective order of the commands. If using the destroy commands the file name will be `cmd-<app>-destroy.log-<index>`
 
 If needing to launch a multiline script with multiple kubectl commands executed in them only the last command executed (being that kubectl or not) will generate the log file. Example, for this multiline script:
 
@@ -27,6 +27,8 @@ kubectl logs -n mynamespace thispod
 The log file will contain only the output of `kubectl logs...` execution.
 
 Multiline scripts (using heredoc format) are considered a single command. You can mix single or multiline commands.
+
+Use the destroy commands (`destroy-cmds`) very carefully, as with kubeconfig credentials which expire (and you should use those) if your build relies on separate-in-time destroy process, when that takes longer than the expiration time it will surely fail. Make some resilient adjustments for this factor. This is a limitation that we might not ever overcome in this module.
 
 ### Example
 
@@ -52,6 +54,12 @@ module "kubectl" {
 EOT
     ,
     "kubectl apply -f any.yaml"
+  ]
+
+  #We use the `|| true` to ensure that the failing kubectl is not important if it fails.
+  destroy-cmds   = [<<-EOT
+    kubectl get ns || true 
+EOT
   ]
 }
 ```
@@ -91,7 +99,10 @@ You might define destroy phase commands too configuring it in the var `destroy-c
 If you're in AWS with EKS:
 
 ```shell
-cd test/eks-token
-export TF_VAR_app="any namespace name to get pods from" && export TF_VAR_cluster-name="my-cluster-name" && export TF_VAR_role="arn:aws:iam::ACCOUNTID:role/my-role" && export TF_VAR_region="my-region"
+cd test/eks-token #(or any of the other examples)
+export TF_VAR_app="any namespace name to get pods from" \
+  && export TF_VAR_cluster-name="my-cluster-name" \
+  && export TF_VAR_role="arn:aws:iam::ACCOUNTID:role/my-role" \
+  && export TF_VAR_region="my-region"
 terraform apply
 ```
