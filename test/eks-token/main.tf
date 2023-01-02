@@ -29,8 +29,17 @@ module "kubectl" {
       kubectl logs -n ${var.app} $pod_to_log
 EOT
   ]
+  destroy-cmds = [
+    <<-EOT
+      kubectl get pods -n ${var.app}
+EOT
+  , "kubectl get ns"]
 }
 
 output "logs" {
   value = module.kubectl.logfile-name
+}
+
+output "logs-destroy" {
+  value = module.kubectl.logfile-destroy-name
 }
