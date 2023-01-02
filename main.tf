@@ -43,11 +43,10 @@ resource "null_resource" "kubectl" {
   triggers = {
     always_apply = var.always-apply ? timestamp() : 0
     cmd = trim(replace(var.cmds[count.index], "kubectl", "kubectl ${local.kubectl_kubeconfig_param}"), "\n")
-    interpreter  = var.interpreter
   }
   provisioner "local-exec" {
     command     = format("%s %s", self.triggers.cmd, ">> ${local.logfile-name}-${count.index}")
-    interpreter = self.triggers.interpreter
+    interpreter = ["/bin/bash", "-c"]
     environment = {
       KUBECONFIG = base64encode(local.kubeconfig)
     }
@@ -61,12 +60,11 @@ resource "null_resource" "kubectl-delete" {
     kubeconfig   = local.kubeconfig
     logfile-name = local.logfile-name
     destroy_cmd  = trim(replace(var.destroy-cmds[count.index], "kubectl", "kubectl ${local.kubectl_kubeconfig_param}"), "\n")
-    interpreter  = var.interpreter
   }
   provisioner "local-exec" {
     when        = destroy
     command     = format("%s %s", self.triggers.destroy_cmd, ">> ${self.triggers.logfile-name}-destroy-${count.index}")
-    interpreter = self.triggers.interpreter
+    interpreter = ["/bin/bash", "-c"]
     environment = {
       KUBECONFIG = base64encode(self.triggers.kubeconfig)
     }
