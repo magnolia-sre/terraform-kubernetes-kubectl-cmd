@@ -3,7 +3,7 @@ locals {
 
   context_name = "terraform-${var.cluster-name}"
 
-  kubectl_kubeconfig_param = var.credentials.kubeconfig-path != null ? "--kubeconfig='${var.credentials.kubeconfig-path}'" : "--kubeconfig <(echo $KUBECONFIG | base64 -d)"
+  kubectl_kubeconfig_param = var.credentials.kubeconfig-path != null ? "--kubeconfig='${var.credentials.kubeconfig-path}'" : "--kubeconfig <(echo $$KUBECONFIG | base64 -d)"
 
   kubeconfig = var.credentials.kubeconfig-path != null? "DO NOTHING" : yamlencode({
     apiVersion      = "v1"
@@ -42,7 +42,7 @@ resource "null_resource" "kubectl" {
 
   triggers = {
     always_apply = var.always-apply ? timestamp() : 0
-    cmd = trim(replace(var.cmds[count.index], "kubectl", "kubectl ${local.kubectl_kubeconfig_param}"), "\n")
+    cmd = trim(replace(var.cmds[count.index], "/(kubectl\\s+[a-zA-Z0-9]+?\\s+|kubectl)/", "$0 ${local.kubectl_kubeconfig_param} "), "\n")
   }
   provisioner "local-exec" {
     command     = format("%s %s", self.triggers.cmd, ">> ${local.logfile-name}-${count.index}")
@@ -59,7 +59,7 @@ resource "null_resource" "kubectl-destroy" {
   triggers = {
     kubeconfig   = local.kubeconfig
     logfile-name = local.logfile-name
-    destroy_cmd  = trim(replace(var.destroy-cmds[count.index], "kubectl", "kubectl ${local.kubectl_kubeconfig_param}"), "\n")
+    destroy_cmd  = trim(replace(var.destroy-cmds[count.index], "/(kubectl\\s+[a-zA-Z0-9]+?\\s+|kubectl)/", "$0 ${local.kubectl_kubeconfig_param} "), "\n")
     interpreter  = jsonencode(var.interpreter)
   }
   provisioner "local-exec" {
